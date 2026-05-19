@@ -261,7 +261,7 @@ body::after{
 
 <script>
 function saveContact() {
-  const vcard = [
+  const vcardData = [
     'BEGIN:VCARD',
     'VERSION:3.0',
     'FN:Omar García Brena',
@@ -273,27 +273,51 @@ function saveContact() {
     'EMAIL;TYPE=INTERNET:ogarciabrena@gmail.com',
     'URL:https://ogarciabrena.github.io',
     'ADR;TYPE=WORK:;;Oaxaca;Oaxaca;;México',
-    'NOTE:Consultor Tecnológico Independiente. Especialidades: Videovigilancia CCTV | Redes e IT | Punto de Venta POS | Cloud e IA Aplicada | Automatización | Control de Acceso | IoT & Telemetría. Web: ogarciabrena.github.io',
+    'NOTE:Consultor Tecnológico Independiente. Especialidades: Videovigilancia CCTV | Redes e IT | Punto de Venta POS | Cloud e IA Aplicada | Automatización | Control de Acceso | IoT. Web: ogarciabrena.github.io',
     'X-SOCIALPROFILE;type=linkedin:https://www.linkedin.com/in/omar-garcia-brena-b32111110',
     'END:VCARD'
   ].join('\r\n');
 
-  const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
+  const blob = new Blob([vcardData], { type: 'text/vcard;charset=utf-8' });
+  const file = new File([blob], 'Omar-Garcia-Brena.vcf', { type: 'text/vcard' });
+
+  // Web Share API — Android Chrome abre diálogo nativo del sistema
+  if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({
+      files: [file],
+      title: 'Omar García Brena',
+      text: 'Consultor Tecnológico Independiente'
+    })
+    .then(() => showSuccess())
+    .catch(err => {
+      // Si el usuario cancela no hacemos nada, si falla usamos fallback
+      if (err.name !== 'AbortError') fallbackDownload(blob);
+    });
+    return;
+  }
+
+  // Fallback — descarga directa (iPhone Safari, desktop, Android sin Web Share)
+  fallbackDownload(blob);
+}
+
+function fallbackDownload(blob) {
+  const url = URL.createObjectURL(blob);
+  const a   = document.createElement('a');
+  a.href = url;
   a.download = 'Omar-Garcia-Brena.vcf';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+  showSuccess();
+}
 
-  // Feedback visual
+function showSuccess() {
   const btn = document.querySelector('.save-btn');
   const orig = btn.innerHTML;
-  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> ¡Contacto guardado!`;
+  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> ¡Listo, ya tienes mi contacto!`;
   btn.style.background = 'var(--accent2)';
-  setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 3000);
+  setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 3500);
 }
 </script>
 </body>
