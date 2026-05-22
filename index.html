@@ -13,56 +13,72 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0b0c0b;
-  --card:#141714;
-  --accent:#7eb88a;
-  --accent2:#5a9468;
-  --gold:#c9a84c;
-  --gold2:#e8c97a;
-  --text:#dfe8dc;
-  --muted:#6b7a68;
-  --border:rgba(255,255,255,0.08);
-  --border2:rgba(255,255,255,0.13);
-  --serif:'Cormorant Garamond',serif;
-  --sans:'DM Sans',sans-serif;
+  --bg:#0b0c0b;--card:#141714;
+  --accent:#7eb88a;--accent2:#5a9468;
+  --gold:#c9a84c;--gold2:#e8c97a;
+  --text:#dfe8dc;--muted:#6b7a68;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.13);
+  --serif:'Cormorant Garamond',serif;--sans:'DM Sans',sans-serif;
 }
 html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
 body{
   display:flex;align-items:center;justify-content:center;
   min-height:100vh;
   padding:1.5rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
-  background:var(--bg);
-  position:relative;
-  overflow-y:auto;
-  overflow-x:hidden;
+  position:relative;overflow-y:auto;overflow-x:hidden;
 }
-
-/* Ambient glow */
 body::before{
-  content:'';position:fixed;
-  top:-20%;left:-10%;
+  content:'';position:fixed;top:-20%;left:-10%;
   width:500px;height:500px;border-radius:50%;
   background:radial-gradient(circle,rgba(90,148,104,0.08) 0%,transparent 65%);
   pointer-events:none;
 }
 body::after{
-  content:'';position:fixed;
-  bottom:-20%;right:-10%;
+  content:'';position:fixed;bottom:-20%;right:-10%;
   width:400px;height:400px;border-radius:50%;
   background:radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 65%);
   pointer-events:none;
 }
 
+/* SKELETON / LOADING */
+.card-skeleton{
+  width:100%;max-width:360px;
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:16px;overflow:hidden;
+  box-shadow:0 24px 64px rgba(0,0,0,0.5);
+  padding:2.5rem 2rem;
+  display:flex;flex-direction:column;align-items:center;gap:1rem;
+}
+.skel-pulse{animation:pulse 1.5s ease infinite}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:.15}}
+.skel-circle{width:76px;height:76px;border-radius:50%;background:var(--border2)}
+.skel-line{height:10px;border-radius:4px;background:var(--border2)}
+
 /* CARD */
 .card{
   position:relative;z-index:1;
   width:100%;max-width:360px;
-  background:var(--card);
-  border:1px solid var(--border2);
-  border-radius:16px;
-  overflow:hidden;
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:16px;overflow:hidden;
   box-shadow:0 24px 64px rgba(0,0,0,0.5);
+  display:none;
 }
+.card.ready{display:block}
+
+/* DISABLED STATE */
+.card-disabled{
+  position:relative;z-index:1;
+  width:100%;max-width:360px;
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:16px;overflow:hidden;
+  box-shadow:0 24px 64px rgba(0,0,0,0.5);
+  padding:3rem 2rem;text-align:center;
+  display:none;
+}
+.card-disabled.show{display:block}
+.dis-ico{font-size:2rem;margin-bottom:1rem;opacity:.4}
+.dis-text{font-size:13px;color:var(--muted);line-height:1.7}
+.dis-link{font-size:11px;color:var(--accent2);text-decoration:none;letter-spacing:.06em;text-transform:uppercase;margin-top:1.25rem;display:inline-block}
 
 /* TOP BAR */
 .card-top{
@@ -73,11 +89,10 @@ body::after{
 }
 @keyframes shimmer{0%{background-position:0% 0}100%{background-position:200% 0}}
 
-/* AVATAR SECTION */
+/* HERO */
 .card-hero{
   padding:2.5rem 2rem 1.75rem;
-  display:flex;flex-direction:column;
-  align-items:center;text-align:center;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
   border-bottom:1px solid var(--border);
 }
 .avatar{
@@ -92,46 +107,26 @@ body::after{
   position:relative;
 }
 .avatar::after{
-  content:'';position:absolute;inset:-4px;
-  border-radius:50%;
+  content:'';position:absolute;inset:-4px;border-radius:50%;
   border:1px solid rgba(201,168,76,0.2);
 }
-.card-name{
-  font-family:var(--serif);
-  font-size:1.75rem;font-weight:700;
-  letter-spacing:-.01em;line-height:1;
-  color:var(--text);margin-bottom:.35rem;
-}
-.card-role{
-  font-size:11px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--accent2);font-weight:500;
-  margin-bottom:.6rem;
-}
-.card-location{
-  font-size:12px;color:var(--muted);
-  display:flex;align-items:center;gap:5px;font-weight:300;
-}
+.card-name{font-family:var(--serif);font-size:1.75rem;font-weight:700;letter-spacing:-.01em;line-height:1;color:var(--text);margin-bottom:.35rem}
+.card-role{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent2);font-weight:500;margin-bottom:.6rem}
+.card-location{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;font-weight:300}
 
 /* CONTACT LIST */
-.contact-list{
-  padding:1.25rem 1.5rem;
-  display:flex;flex-direction:column;
-  gap:1px;
-}
+.contact-list{padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:1px}
 .c-row{
   display:flex;align-items:center;gap:12px;
-  padding:.85rem 0;
-  border-bottom:1px solid var(--border);
-  text-decoration:none;
-  transition:opacity .2s;
+  padding:.85rem 0;border-bottom:1px solid var(--border);
+  text-decoration:none;transition:opacity .2s;
 }
 .c-row:last-child{border-bottom:none}
 .c-row:hover{opacity:.75}
 .c-ico{
   width:34px;height:34px;border-radius:8px;
   display:flex;align-items:center;justify-content:center;
-  font-size:15px;flex-shrink:0;
-  border:1px solid var(--border);
+  font-size:15px;flex-shrink:0;border:1px solid var(--border);
 }
 .c-ico.green{background:rgba(90,148,104,.1);border-color:rgba(90,148,104,.2)}
 .c-ico.blue{background:rgba(74,158,218,.1);border-color:rgba(74,158,218,.2)}
@@ -140,55 +135,34 @@ body::after{
 .c-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1px;font-weight:500}
 .c-val{font-size:13px;color:var(--text);font-weight:400}
 
-/* SERVICES TAGS */
-.services-block{
-  padding:1rem 1.5rem 1.25rem;
-  border-top:1px solid var(--border);
-}
-.services-label{
-  font-size:10px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--muted);font-weight:500;margin-bottom:.75rem;
-}
+/* TAGS */
+.services-block{padding:1rem 1.5rem 1.25rem;border-top:1px solid var(--border)}
+.services-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:.75rem}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{
-  font-size:10px;letter-spacing:.05em;
-  color:var(--muted);
-  border:1px solid var(--border);
-  padding:3px 10px;border-radius:20px;
-  font-weight:400;
-}
+.tag{font-size:10px;letter-spacing:.05em;color:var(--muted);border:1px solid var(--border);padding:3px 10px;border-radius:20px;font-weight:400}
 
 /* SAVE BUTTON */
-.save-wrap{
-  padding:1.25rem 1.5rem 1.75rem;
-}
+.save-wrap{padding:1.25rem 1.5rem 1.75rem}
 .save-btn{
-  width:100%;
-  background:var(--accent);color:var(--bg);
-  font-family:var(--sans);
-  font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  padding:14px;border:none;border-radius:8px;
-  cursor:pointer;
+  width:100%;background:var(--accent);color:var(--bg);
+  font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:14px;border:none;border-radius:8px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;gap:8px;
   transition:opacity .2s,transform .15s;
   -webkit-tap-highlight-color:transparent;
   text-decoration:none;box-sizing:border-box;
+  opacity:.4;pointer-events:none;
 }
+.save-btn.ready{opacity:1;pointer-events:auto}
 .save-btn:hover{opacity:.9}
 .save-btn:active{transform:scale(0.98)}
-.save-btn svg{flex-shrink:0}
-
-.save-note{
-  font-size:11px;color:var(--muted);text-align:center;
-  margin-top:.75rem;font-weight:300;line-height:1.5;
-}
+.save-note{font-size:11px;color:var(--muted);text-align:center;margin-top:.75rem;font-weight:300;line-height:1.5}
 
 /* BACK LINK */
 .back-link{
   display:block;text-align:center;margin-top:1.5rem;
   font-size:11px;color:var(--muted);text-decoration:none;
-  letter-spacing:.06em;text-transform:uppercase;
-  transition:color .2s;
+  letter-spacing:.06em;text-transform:uppercase;transition:color .2s;
 }
 .back-link:hover{color:var(--text)}
 </style>
@@ -196,42 +170,32 @@ body::after{
 <body>
 
 <div style="width:100%;max-width:360px;padding-bottom:1rem">
-  <div class="card">
-    <div class="card-top"></div>
 
+  <!-- SKELETON mientras carga -->
+  <div class="card-skeleton skel-pulse" id="skeleton">
+    <div class="skel-circle"></div>
+    <div class="skel-line" style="width:60%"></div>
+    <div class="skel-line" style="width:40%"></div>
+    <div class="skel-line" style="width:80%;margin-top:.5rem"></div>
+    <div class="skel-line" style="width:75%"></div>
+    <div class="skel-line" style="width:70%"></div>
+  </div>
+
+  <!-- CARD principal (oculta hasta que cargue config) -->
+  <div class="card" id="main-card">
+    <div class="card-top"></div>
     <div class="card-hero">
       <div class="avatar">OG</div>
-      <p class="card-name">Omar García Brena</p>
-      <p class="card-role">Consultor Tecnológico Independiente</p>
+      <p class="card-name" id="c-name">Omar García Brena</p>
+      <p class="card-role" id="c-title">Consultor Tecnológico Independiente</p>
       <p class="card-location">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        Oaxaca, México
+        <span id="c-location">Oaxaca, México</span>
       </p>
     </div>
 
-    <div class="contact-list">
-      <a href="tel:+5215514552202" class="c-row">
-        <div class="c-ico green">📱</div>
-        <div><div class="c-label">Teléfono</div><div class="c-val">+52 55 1455 2202</div></div>
-      </a>
-      <a href="https://wa.me/5215514552202" class="c-row" target="_blank">
-        <div class="c-ico wa">💬</div>
-        <div><div class="c-label">WhatsApp</div><div class="c-val">+52 55 1455 2202</div></div>
-      </a>
-      <a href="mailto:ogarciabrena@gmail.com" class="c-row">
-        <div class="c-ico green">✉️</div>
-        <div><div class="c-label">Email</div><div class="c-val">ogarciabrena@gmail.com</div></div>
-      </a>
-      <a href="https://ogarciabrena.github.io" class="c-row" target="_blank">
-        <div class="c-ico gold">🌐</div>
-        <div><div class="c-label">Web</div><div class="c-val">ogarciabrena.github.io</div></div>
-      </a>
-      <a href="https://www.linkedin.com/in/omar-garcia-brena-b32111110" class="c-row" target="_blank">
-        <div class="c-ico blue">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="#4a9eda"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-        </div>
-        <div><div class="c-label">LinkedIn</div><div class="c-val">omar-garcia-brena</div></div>
-      </a>
+    <div class="contact-list" id="contact-list">
+      <!-- Inyectado dinámicamente desde config -->
     </div>
 
     <div class="services-block">
@@ -249,7 +213,7 @@ body::after{
     </div>
 
     <div class="save-wrap">
-      <a class="save-btn" href="data:text/x-vcard;base64,QkVHSU46VkNBUkQNClZFUlNJT046My4wDQpGTjpPbWFyIEdhcmPDrWEgQnJlbmENCk46R2FyY8OtYSBCcmVuYTtPbWFyOzs7DQpUSVRMRTpDb25zdWx0b3IgVGVjbm9sw7NnaWNvIEluZGVwZW5kaWVudGUNCk9SRzpPbWFyIEdhcmPDrWEgQnJlbmENClRFTDtUWVBFPUNFTEwsVk9JQ0U6KzUyMTU1MTQ1NTIyMDINClRFTDtUWVBFPVdPUkssVk9JQ0U6KzUyMTU1MTQ1NTIyMDINCkVNQUlMO1RZUEU9SU5URVJORVQ6b2dhcmNpYWJyZW5hQGdtYWlsLmNvbQ0KVVJMOmh0dHBzOi8vb2dhcmNpYWJyZW5hLmdpdGh1Yi5pbw0KQURSO1RZUEU9V09SSzo7O09heGFjYTtPYXhhY2E7O03DqXhpY28NCk5PVEU6Q29uc3VsdG9yIFRlY25vbMOzZ2ljby4gVmlkZW92aWdpbGFuY2lhIENDVFYgfCBSZWRlcyBlIElUIHwgUE9TIHwgQ2xvdWQgZSBJQSB8IEF1dG9tYXRpemFjacOzbiB8IElvVC4gV2ViOiBvZ2FyY2lhYnJlbmEuZ2l0aHViLmlvDQpYLVNPQ0lBTFBST0ZJTEU7dHlwZT1saW5rZWRpbjpodHRwczovL3d3dy5saW5rZWRpbi5jb20vaW4vb21hci1nYXJjaWEtYnJlbmEtYjMyMTExMTEwDQpFTkQ6VkNBUkQ=" download="Omar-Garcia-Brena.vcf">
+      <a class="save-btn" id="save-btn" href="#" download="Omar-Garcia-Brena.vcf">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
         Guardar contacto
       </a>
@@ -257,11 +221,197 @@ body::after{
     </div>
   </div>
 
-  <a href="https://ogarciabrena.github.io" class="back-link">← Ver portafolio completo</a>
+  <!-- ESTADO DESACTIVADO -->
+  <div class="card-disabled" id="card-disabled">
+    <div class="card-top"></div>
+    <div style="padding:2.5rem 2rem;text-align:center">
+      <div class="dis-ico">📵</div>
+      <p class="dis-text">La tarjeta de contacto no está disponible en este momento.</p>
+      <a href="https://ogarciabrena.github.io" class="dis-link">← Ver portafolio</a>
+    </div>
+  </div>
+
+  <a href="https://ogarciabrena.github.io" class="back-link" id="back-link">← Ver portafolio completo</a>
+
 </div>
 
 <script>
-// vCard handled via direct data URI link
+const API_TOKEN  = 'j9Lt0We6XYJyqQ08E_3skdiM3nMV53szfSB7M58B_rw';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzsu7ituHg3jk7Wda6gSu6JHdraDcAFEUDK12UcAB0cobd0Kj3ej9QAaNab2hzZk_Tyw/exec';
+
+const LI_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#4a9eda"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 .774v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>';
+
+function norm(val) {
+  if (val === null || val === undefined) return '';
+  return String(val).trim();
+}
+function isTrue(val) {
+  return norm(val).toUpperCase() !== 'FALSE';
+}
+
+async function init() {
+  try {
+    const res  = await fetch(SCRIPT_URL + '?action=config&t=' + API_TOKEN, { cache: 'no-store' });
+    const data = await res.json();
+    const raw  = data.config || {};
+    const cfg  = {};
+    Object.keys(raw).forEach(k => { cfg[k] = norm(raw[k]); });
+
+    // ── Switch maestro ──────────────────────────────────────
+    const enabled = cfg.vcard_enabled !== undefined ? isTrue(cfg.vcard_enabled) : true;
+    if (!enabled) {
+      document.getElementById('skeleton').style.display    = 'none';
+      document.getElementById('card-disabled').classList.add('show');
+      return;
+    }
+
+    // ── Nombre y título ─────────────────────────────────────
+    const fullName = cfg.vcard_name  || 'Omar García Brena';
+    const title    = cfg.vcard_title || 'Consultor Tecnológico Independiente';
+    const city     = cfg.vcard_city  || 'Oaxaca, México';
+    document.getElementById('c-name').textContent     = fullName;
+    document.getElementById('c-title').textContent    = title;
+    document.getElementById('c-location').textContent = city;
+
+    // ── Construir filas de contacto ─────────────────────────
+    const list = document.getElementById('contact-list');
+    list.innerHTML = '';
+
+    // Teléfono / WA
+    const waUrl     = cfg.whatsapp_url  || '';
+    const waText    = cfg.whatsapp_text || '';
+    const waVisible = isTrue(cfg.whatsapp_visible !== undefined ? cfg.whatsapp_visible : 'TRUE');
+
+    if (waUrl && waText && waVisible) {
+      // Teléfono
+      const telRow = document.createElement('a');
+      telRow.className = 'c-row';
+      telRow.href = 'tel:' + waUrl.replace('https://wa.me/', '');
+      telRow.innerHTML = '<div class="c-ico green">📱</div><div><div class="c-label">Teléfono</div><div class="c-val">' + waText + '</div></div>';
+      list.appendChild(telRow);
+      // WhatsApp
+      const waRow = document.createElement('a');
+      waRow.className = 'c-row';
+      waRow.href = waUrl;
+      waRow.target = '_blank';
+      waRow.rel = 'noopener';
+      waRow.innerHTML = '<div class="c-ico wa">💬</div><div><div class="c-label">WhatsApp</div><div class="c-val">' + waText + '</div></div>';
+      list.appendChild(waRow);
+    }
+
+    // Email
+    const emailVal  = cfg.email_address || '';
+    const emailShow = isTrue(cfg.email_visible !== undefined ? cfg.email_visible : 'TRUE');
+    if (emailVal && emailShow) {
+      const eRow = document.createElement('a');
+      eRow.className = 'c-row';
+      eRow.href = 'mailto:' + emailVal;
+      eRow.innerHTML = '<div class="c-ico green">✉️</div><div><div class="c-label">Email</div><div class="c-val">' + emailVal + '</div></div>';
+      list.appendChild(eRow);
+    }
+
+    // Web
+    const webUrl = cfg.vcard_url || 'https://ogarciabrena.github.io';
+    const webRow = document.createElement('a');
+    webRow.className = 'c-row';
+    webRow.href = webUrl;
+    webRow.target = '_blank';
+    webRow.rel = 'noopener';
+    const webDisplay = webUrl.replace('https://', '');
+    webRow.innerHTML = '<div class="c-ico gold">🌐</div><div><div class="c-label">Web</div><div class="c-val">' + webDisplay + '</div></div>';
+    list.appendChild(webRow);
+
+    // LinkedIn
+    const liUrl     = cfg.linkedin_url  || '';
+    const liText    = cfg.linkedin_text || 'omar-garcia-brena';
+    const liVisible = isTrue(cfg.linkedin_visible !== undefined ? cfg.linkedin_visible : 'TRUE');
+    if (liUrl && liVisible) {
+      const liRow = document.createElement('a');
+      liRow.className = 'c-row';
+      liRow.href = liUrl;
+      liRow.target = '_blank';
+      liRow.rel = 'noopener';
+      liRow.innerHTML = '<div class="c-ico blue">' + LI_SVG + '</div><div><div class="c-label">LinkedIn</div><div class="c-val">' + liText + '</div></div>';
+      list.appendChild(liRow);
+    }
+
+    // ── Generar vCard ───────────────────────────────────────
+    buildVCard(cfg, fullName, title, city);
+
+    // ── Mostrar card ────────────────────────────────────────
+    document.getElementById('skeleton').style.display = 'none';
+    document.getElementById('main-card').classList.add('ready');
+
+  } catch(e) {
+    // Error de red: mostrar card con fallback mínimo
+    document.getElementById('skeleton').style.display = 'none';
+    document.getElementById('main-card').classList.add('ready');
+    document.getElementById('contact-list').innerHTML =
+      '<div style="padding:.5rem 0;font-size:12px;color:var(--muted)">Carga los datos desde tu dispositivo o recarga la página.</div>';
+  }
+}
+
+function buildVCard(cfg, fullName, title, city) {
+  const waUrl     = cfg.whatsapp_url  || '';
+  const waText    = cfg.whatsapp_text || '';
+  const waVisible = cfg.whatsapp_visible !== undefined ? cfg.whatsapp_visible.toUpperCase() !== 'FALSE' : true;
+  const emailVal  = cfg.email_address  || '';
+  const emailShow = cfg.email_visible  !== undefined ? cfg.email_visible.toUpperCase()  !== 'FALSE' : true;
+  const liUrl     = cfg.linkedin_url   || '';
+  const liVisible = cfg.linkedin_visible !== undefined ? cfg.linkedin_visible.toUpperCase() !== 'FALSE' : true;
+  const webUrl    = cfg.vcard_url      || 'https://ogarciabrena.github.io';
+  const org       = cfg.vcard_org      || fullName;
+  const note      = cfg.vcard_note     || 'Consultor Tecnológico. Videovigilancia | Redes | POS | Cloud | Automatización | IoT.';
+  const cityParts = city.split(',');
+  const cityName  = (cityParts[0] || 'Oaxaca').trim();
+  const country   = (cityParts[1] || 'México').trim();
+
+  // Parsear apellido/nombre para campo N:
+  const nameParts = fullName.trim().split(' ');
+  const firstName = nameParts[0] || '';
+  const lastName  = nameParts.slice(1).join(' ') || '';
+
+  const lines = [
+    'BEGIN:VCARD',
+    'VERSION:3.0',
+    'FN:' + fullName,
+    'N:' + lastName + ';' + firstName + ';;;',
+    'TITLE:' + title,
+    'ORG:' + org,
+    'ADR;TYPE=WORK:;;' + cityName + ';' + cityName + ';;' + country,
+    'NOTE:' + note
+  ];
+
+  if (emailVal && emailShow) {
+    lines.push('EMAIL;TYPE=INTERNET:' + emailVal);
+  }
+  if (waUrl && waText && waVisible) {
+    const phone = waUrl.replace('https://wa.me/', '');
+    const e164  = phone.startsWith('52') ? '+' + phone : phone;
+    lines.push('TEL;TYPE=CELL,VOICE:' + e164);
+  }
+  if (liUrl && liVisible) {
+    lines.push('X-SOCIALPROFILE;type=linkedin:' + liUrl);
+    lines.push('URL:' + liUrl);
+  } else {
+    lines.push('URL:' + webUrl);
+  }
+  lines.push('END:VCARD');
+
+  const vcfStr = lines.join('\r\n');
+  const blob   = new Blob([vcfStr], { type: 'text/x-vcard;charset=utf-8' });
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const btn = document.getElementById('save-btn');
+    if (btn) {
+      btn.href = e.target.result;
+      btn.classList.add('ready');
+    }
+  };
+  reader.readAsDataURL(blob);
+}
+
+init();
 </script>
 </body>
 </html>
